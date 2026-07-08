@@ -3,12 +3,12 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "seedream-5-api"
+name = "seedream-5-pro-api"
 version = "0.1.0"
 authors = [
   { name="Anil Matcha" },
 ]
-description = "Python wrapper for ByteDance's Seedream 5.0 API — 4K text-to-image generation, natural-language image editing, precise typography, and consistent character generation."
+description = "Python wrapper for ByteDance's Seedream 5.0 Pro API — 4K text-to-image generation, natural-language image editing, precise typography, and consistent character generation."
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [

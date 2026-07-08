@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'
 from seedream_api import SeedreamAPI
 
 def main():
-    parser = argparse.ArgumentParser(description="Seedream 5.0 CLI Wrapper for OpenClaw Skill")
+    parser = argparse.ArgumentParser(description="Seedream 5.0 Pro CLI Wrapper for OpenClaw Skill")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     def add_t2i_parser(name, help_text, default_size="2K"):
@@ -32,9 +32,13 @@ def main():
         p.add_argument("--wait", action="store_true", help="Wait for completion")
         return p
 
-    # Seedream 5.0
-    add_t2i_parser("t2i", "Generate image from text (Seedream 5.0)", default_size="2K")
-    add_edit_parser("edit", "Edit an existing image (Seedream 5.0 Edit)")
+    # Seedream 5.0 Pro
+    add_t2i_parser("t2i", "Generate image from text (Seedream 5.0 Pro)", default_size="2K")
+    add_edit_parser("edit", "Edit an existing image (Seedream 5.0 Pro Edit)")
+
+    # Seedream 5.0 (base, non-Pro)
+    add_t2i_parser("t2i-v5", "Generate image from text (Seedream 5.0 base)", default_size="2K")
+    add_edit_parser("edit-v5", "Edit an existing image (Seedream 5.0 base Edit)")
 
     # Seedream 4.5
     add_t2i_parser("t2i-v4-5", "Generate image from text (Seedream 4.5)")
@@ -68,6 +72,10 @@ def main():
             res = api.text_to_image(args.prompt, args.aspect_ratio, args.size, args.num_images, args.seed)
         elif args.command == "edit":
             res = api.edit_image(args.prompt, args.images, args.aspect_ratio, args.size, args.seed)
+        elif args.command == "t2i-v5":
+            res = api.text_to_image_v5(args.prompt, args.aspect_ratio, args.size, args.num_images, args.seed)
+        elif args.command == "edit-v5":
+            res = api.edit_image_v5(args.prompt, args.images, args.aspect_ratio, args.size, args.seed)
         elif args.command == "t2i-v4-5":
             res = api.text_to_image_v4_5(args.prompt, args.aspect_ratio, args.size, args.num_images, args.seed)
         elif args.command == "edit-v4-5":

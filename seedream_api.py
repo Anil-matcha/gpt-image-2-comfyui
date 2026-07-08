@@ -9,7 +9,7 @@ load_dotenv()
 class SeedreamAPI:
     def __init__(self, api_key=None):
         """
-        Initialize the Seedream 5.0 API client.
+        Initialize the Seedream 5.0 Pro API client.
         :param api_key: Your MuAPI.ai API key. Defaults to MUAPI_API_KEY environment variable.
         """
         self.api_key = api_key or os.getenv("MUAPI_API_KEY")
@@ -24,15 +24,64 @@ class SeedreamAPI:
 
     def text_to_image(self, prompt, aspect_ratio="1:1", size="2K", num_images=1, seed=None):
         """
-        Submits a Seedream 5.0 Text-to-Image generation task.
+        Submits a Seedream 5.0 Pro Text-to-Image generation task.
 
-        Seedream 5.0 is ByteDance's next-generation text-to-image model, delivering
-        high-fidelity AI art with advanced visual reasoning and precise typography.
+        Seedream 5.0 Pro is ByteDance's flagship text-to-image model, delivering
+        maximum-fidelity AI art with advanced visual reasoning and precise typography.
         Supports up to 4K resolution, complex scene construction, and consistent
         character generation.
 
         :param prompt: Descriptive text prompt for the image to generate.
         :param aspect_ratio: Image aspect ratio (e.g. '1:1', '16:9', '9:16', '4:3', '3:4').
+        :param size: Output resolution — '1K', '2K', or '4K'.
+        :param num_images: Number of images to generate (1-4).
+        :param seed: Optional seed for reproducible generations.
+        :return: JSON response with request_id.
+        """
+        endpoint = f"{self.base_url}/bytedance-seedream-v5.0-pro"
+        payload = {
+            "prompt": prompt,
+            "aspect_ratio": aspect_ratio,
+            "size": size,
+            "num_images": num_images,
+        }
+        if seed is not None:
+            payload["seed"] = seed
+        return self._post_request(endpoint, payload)
+
+    def edit_image(self, prompt, image_urls, aspect_ratio="1:1", size="2K", seed=None):
+        """
+        Submits a Seedream 5.0 Pro Edit (image-to-image) generation task.
+
+        Seedream 5.0 Pro Edit enables precise, controllable edits using natural language —
+        high-fidelity style transfer (Anime, Cyberpunk, Fantasy), background swaps,
+        and object modification while preserving lighting, color tones, and character
+        consistency.
+
+        :param prompt: Natural-language instruction describing the desired edit.
+        :param image_urls: List of source image URLs to edit (reference with @image1, @image2, ...).
+        :param aspect_ratio: Output aspect ratio.
+        :param size: Output resolution — '1K', '2K', or '4K'.
+        :param seed: Optional seed for reproducible generations.
+        :return: JSON response with request_id.
+        """
+        endpoint = f"{self.base_url}/bytedance-seedream-v5.0-pro-edit"
+        payload = {
+            "prompt": prompt,
+            "image_urls": image_urls,
+            "aspect_ratio": aspect_ratio,
+            "size": size,
+        }
+        if seed is not None:
+            payload["seed"] = seed
+        return self._post_request(endpoint, payload)
+
+    def text_to_image_v5(self, prompt, aspect_ratio="1:1", size="2K", num_images=1, seed=None):
+        """
+        Submits a Seedream 5.0 (base, non-Pro) Text-to-Image generation task.
+
+        :param prompt: Descriptive text prompt for the image to generate.
+        :param aspect_ratio: Image aspect ratio.
         :param size: Output resolution — '1K', '2K', or '4K'.
         :param num_images: Number of images to generate (1-4).
         :param seed: Optional seed for reproducible generations.
@@ -49,17 +98,12 @@ class SeedreamAPI:
             payload["seed"] = seed
         return self._post_request(endpoint, payload)
 
-    def edit_image(self, prompt, image_urls, aspect_ratio="1:1", size="2K", seed=None):
+    def edit_image_v5(self, prompt, image_urls, aspect_ratio="1:1", size="2K", seed=None):
         """
-        Submits a Seedream 5.0 Edit (image-to-image) generation task.
-
-        Seedream 5.0 Edit enables precise, controllable edits using natural language —
-        high-fidelity style transfer (Anime, Cyberpunk, Fantasy), background swaps,
-        and object modification while preserving lighting, color tones, and character
-        consistency.
+        Submits a Seedream 5.0 (base, non-Pro) Edit (image-to-image) generation task.
 
         :param prompt: Natural-language instruction describing the desired edit.
-        :param image_urls: List of source image URLs to edit (reference with @image1, @image2, ...).
+        :param image_urls: List of source image URLs to edit.
         :param aspect_ratio: Output aspect ratio.
         :param size: Output resolution — '1K', '2K', or '4K'.
         :param seed: Optional seed for reproducible generations.
@@ -253,7 +297,7 @@ if __name__ == "__main__":
         api = SeedreamAPI()
         prompt = "A cinematic portrait of a cyberpunk samurai in a neon-lit Tokyo alley, 4k, hyperrealistic"
 
-        print(f"Submitting Seedream 5.0 Text-to-Image task with prompt: {prompt}")
+        print(f"Submitting Seedream 5.0 Pro Text-to-Image task with prompt: {prompt}")
         submission = api.text_to_image(prompt=prompt, aspect_ratio="16:9", size="2K")
         request_id = submission.get("request_id")
         print(f"Task submitted. Request ID: {request_id}")
